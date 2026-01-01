@@ -73,5 +73,31 @@ namespace LibraryApi.Controllers
 
             return Ok(book);
         }
+
+        [HttpGet("GetBooksByCategoryId")]
+        public IActionResult GetBooksByCategoryId(int categoryId)
+        {
+            var result = _bookService.GetBooksByCategoryId(categoryId);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound("Kitap bulunamadı.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetBooksByAuthorId")]
+        public IActionResult GetBooksByAuthorId(int authorId)
+        {
+            var result = _bookService.GetBooksByAuthorId(authorId);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound("Kitap bulunamadı.");
+            }
+
+            return Ok(result);
+        }
     }
 }

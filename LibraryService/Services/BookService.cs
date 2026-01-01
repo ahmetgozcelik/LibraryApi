@@ -141,6 +141,45 @@ namespace LibraryService.Services
             
         }
 
+        public IResponse<IEnumerable<BookQueryDto>> GetBooksByCategoryId(int categoryId)
+        {
+            try
+            {
+                var booksInCategory = _bookRepository.GetAll().Where(x => x.CategoryId == categoryId).ToList();
+
+                var bookDtos = _mapper.Map<IEnumerable<BookQueryDto>>(booksInCategory);
+
+                if(bookDtos == null || bookDtos.Count() == 0)
+                {
+                    return ResponseGeneric<IEnumerable<BookQueryDto>>.Error("Kitap bulunamadı.");
+                }
+
+                return ResponseGeneric<IEnumerable<BookQueryDto>>.Success(bookDtos, "Kitaplar başarıyla döndürüldü.");
+            }
+            catch
+            {
+                return ResponseGeneric<IEnumerable<BookQueryDto>>.Error("Bir hata oluştu.");
+            }
+        }
+        public IResponse<IEnumerable<BookQueryDto>> GetBooksByAuthorId(int authorId)
+        {
+            try
+            {
+                var books = _bookRepository.GetAll().Where(x => x.AuthorId == authorId).ToList();
+                var bookDtos = _mapper.Map<IEnumerable<BookQueryDto>>(books);
+
+                if (bookDtos.Count() == 0 || bookDtos == null)
+                {
+                    return ResponseGeneric<IEnumerable<BookQueryDto>>.Error("Kitap bulunamadı.");
+                }
+
+                return ResponseGeneric<IEnumerable<BookQueryDto>>.Success(bookDtos, "Kitaplar başarıyla döndürüldü.");
+            }
+            catch
+            {
+                return ResponseGeneric<IEnumerable<BookQueryDto>>.Error("Bir hata oluştu.");
+            }        }
+
         public Task<IResponse<BookQueryDto>> Update(BookQueryDto book)
         {
             throw new NotImplementedException();

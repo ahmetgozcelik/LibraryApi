@@ -16,5 +16,7 @@ namespace LibraryService.Interfaces
         Task<IResponse<BookQueryDto>> Update(BookQueryDto book);
         IResponse<BookQueryDto> Delete(int id);
         IResponse<IEnumerable<BookQueryDto>> GetByName(string name);
+        IResponse<IEnumerable<BookQueryDto>> GetBooksByCategoryId(int categoryId);
+        IResponse<IEnumerable<BookQueryDto>> GetBooksByAuthorId(int authorId);
     }
 }
