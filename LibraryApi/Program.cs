@@ -1,11 +1,20 @@
+using System.Xml;
 using LibraryCore.Entities;
 using LibraryDataAccess;
 using LibraryDataAccess.Repositories;
 using LibraryService.Interfaces;
 using LibraryService.MapProfile;
 using LibraryService.Services;
+using Serilog;
+
+// Log yapýlandýrmasý
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 

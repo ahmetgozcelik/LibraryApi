@@ -6,6 +6,7 @@ using LibraryCore.Entities;
 using LibraryDataAccess.Repositories;
 using LibraryService.Interfaces;
 using LibraryService.Response;
+using Microsoft.Extensions.Logging;
 
 namespace LibraryService.Services
 {
@@ -13,11 +14,13 @@ namespace LibraryService.Services
     {
         private readonly IGenericRepository<Book> _bookRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<BookService> _logger;
 
-        public BookService(IGenericRepository<Book> bookRepository, IMapper mapper)
+        public BookService(IGenericRepository<Book> bookRepository, IMapper mapper, ILogger<BookService> logger)
         {
             _bookRepository = bookRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public Task<IResponse<BookCreateDto>> Create(BookCreateDto book)
@@ -34,6 +37,8 @@ namespace LibraryService.Services
                 newBook.RecordDate = DateTime.Now;
                 _bookRepository.Create(newBook);
 
+                _logger.LogInformation("Kitap başarıyla oluşturuldu.", book.Title);
+
                 // 2. Entity'yi tekrar DTO'ya Maple (Hata burada çözülüyor)
                 var createdDto = _mapper.Map<BookCreateDto>(newBook);
 
@@ -42,6 +47,7 @@ namespace LibraryService.Services
             }
             catch
             {
+                _logger.LogError("Kitap oluştururken bir hata oluştu.", book.Title);
                 return Task.FromResult<IResponse<BookCreateDto>>(ResponseGeneric<BookCreateDto>.Error("Bir hata oluştu."));
             }
             
@@ -59,11 +65,13 @@ namespace LibraryService.Services
                 }
 
                 _bookRepository.Delete(book);
+                _logger.LogInformation($"deleted {book.Title}"); // doğru yazım
 
                 return ResponseGeneric<BookQueryDto>.Success(null, "Book başarıyla silindi.");
             }
             catch
             {
+                _logger.LogError($"deleted failed {id}");
                 return ResponseGeneric<BookQueryDto>.Error("Bir hata oluştu.");
             }
             
