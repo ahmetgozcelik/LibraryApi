@@ -33,7 +33,7 @@ namespace LibraryApi.Controllers
         {
             var result = _categoryService.Delete(id);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest("Kategori silinemedi.");
             }
@@ -44,7 +44,7 @@ namespace LibraryApi.Controllers
         [HttpPost("Create")]
         public IActionResult Create([FromBody] CategoryCreateDto category)
         {
-            if(category == null)
+            if (category == null)
             {
                 return BadRequest("Kategori bilgileri boş olamaz.");
             }
@@ -67,6 +67,24 @@ namespace LibraryApi.Controllers
             if (!result.IsSuccess)
             {
                 return NotFound("Kategori bulunamadı.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPut("Update")]
+        public IActionResult Update([FromBody] CategoryUpdateDto category)
+        {
+            if(category == null)
+            {
+                return BadRequest("Kategori bilgileri boş olamaz.");
+            }
+
+            var result = _categoryService.Update(category);
+
+            if (!result.Result.IsSuccess)
+            {
+                return BadRequest("Kategori işlemi başarısız.");
             }
 
             return Ok(result);

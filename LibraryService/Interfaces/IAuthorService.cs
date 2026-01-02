@@ -15,7 +15,7 @@ namespace LibraryService.Interfaces
         IResponse<IEnumerable<AuthorQueryDto>> ListAll();
         IResponse<AuthorQueryDto> GetById(int id);
         Task<IResponse<Author>> Create(AuthorCreateDto author);
-        Task<IResponse<Author>> Update(Author author);
+        Task<IResponse<AuthorUpdateDto>> Update(AuthorUpdateDto author);
         IResponse<Author> Delete(int id);
         IResponse<IEnumerable<AuthorQueryDto>> GetByName(string name);
     }

@@ -72,5 +72,23 @@ namespace LibraryApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut("Update")]
+        public IActionResult Update([FromBody] AuthorUpdateDto author)
+        {
+            if(author == null)
+            {
+                return BadRequest("Yazar bilgileri boş olamaz.");
+            }
+
+            var result = _authorService.Update(author);
+
+            if (!result.Result.IsSuccess)
+            {
+                return BadRequest("Yazar oluşturulamadı.");
+            }
+
+            return Ok(result);
+        }
     }
 }

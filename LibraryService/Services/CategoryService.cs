@@ -29,22 +29,24 @@ namespace LibraryService.Services
             {
                 if (category == null)
                 {
-                    return Task.FromResult<IResponse<CategoryCreateDto>>(ResponseGeneric<CategoryCreateDto>.Error("Category bilgileri boş olamaz."));
+                    return Task.FromResult<IResponse<CategoryCreateDto>>(ResponseGeneric<CategoryCreateDto>.Error("Kategori bilgileri boş olamaz."));
                 }
 
                 var newCategory = _mapper.Map<Category>(category);
+                newCategory.RecordDate = DateTime.Now;
+
                 _categoryRepository.Create(newCategory);
 
-                var createdCategory = _mapper.Map<CategoryCreateDto>(category);
+                var createdDto = _mapper.Map<CategoryCreateDto>(newCategory);
 
-                return Task.FromResult<IResponse<CategoryCreateDto>>(ResponseGeneric<CategoryCreateDto>.Success(createdCategory, "Category başarıyla oluşturuldu."));
+                return Task.FromResult<IResponse<CategoryCreateDto>>(ResponseGeneric<CategoryCreateDto>.Success(createdDto, "Kategori başarıyla oluşturuldu."));
             }
             catch
             {
                 return Task.FromResult<IResponse<CategoryCreateDto>>(ResponseGeneric<CategoryCreateDto>.Error("Bir hata oluştu."));
             }
-            
         }
+        
 
         public IResponse<CategoryQueryDto> Delete(int id)
         {
@@ -126,9 +128,26 @@ namespace LibraryService.Services
            
         }
 
-        public Task<IResponse<CategoryQueryDto>> Update(CategoryQueryDto category)
+        public Task<IResponse<CategoryUpdateDto>> Update(CategoryUpdateDto categoryDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var categoryEntity = _categoryRepository.GetByIdAsync(categoryDto.Id).Result;
+
+                if (categoryEntity == null)
+                {
+                    return Task.FromResult<IResponse<CategoryUpdateDto>>(ResponseGeneric<CategoryUpdateDto>.Error("Kategori bulunamadı."));
+                }
+
+                _mapper.Map(categoryDto, categoryEntity);
+                _categoryRepository.Update(categoryEntity);
+
+                return Task.FromResult<IResponse<CategoryUpdateDto>>(ResponseGeneric<CategoryUpdateDto>.Success(null, "Kategori başarıyla güncellendi."));
+            }
+            catch
+            {
+                return Task.FromResult<IResponse<CategoryUpdateDto>>(ResponseGeneric<CategoryUpdateDto>.Error("Bir hata oluştu."));
+            }
         }
     }
 }

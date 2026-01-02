@@ -129,9 +129,26 @@ namespace LibraryService.Services
             
         }
 
-        public Task<IResponse<Author>> Update(Author author)
+        public Task<IResponse<AuthorUpdateDto>> Update(AuthorUpdateDto authorDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var authorEntity = _authorRepository.GetByIdAsync(authorDto.Id).Result;
+
+                if(authorEntity == null)
+                {
+                    return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Error("Yazar bulunamadı."));
+                }
+
+                _mapper.Map(authorDto, authorEntity);
+                _authorRepository.Update(authorEntity);
+
+                return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Success(null, "Yazar başarıyla güncellendi."));
+            }
+            catch
+            {
+                return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Error("Bir hata oluştu."));
+            }
         }
     }
 }

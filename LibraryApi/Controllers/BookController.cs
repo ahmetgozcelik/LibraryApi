@@ -74,6 +74,24 @@ namespace LibraryApi.Controllers
             return Ok(book);
         }
 
+        [HttpPut("Update")]
+        public IActionResult Update([FromBody] BookUpdateDto book)
+        {
+            if(book == null)
+            {
+                return BadRequest("Kitap bilgileri boş olamaz.");
+            }
+
+            var result = _bookService.Update(book);
+
+            if (!result.Result.IsSuccess)
+            {
+                return BadRequest("Kitap güncellenemedi.");
+            }
+
+            return Ok(book);
+        }
+
         [HttpGet("GetBooksByCategoryId")]
         public IActionResult GetBooksByCategoryId(int categoryId)
         {

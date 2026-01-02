@@ -13,7 +13,7 @@ namespace LibraryService.Interfaces
         IResponse<IEnumerable<CategoryQueryDto>> ListAll();
         IResponse<CategoryQueryDto> GetById(int id);
         Task<IResponse<CategoryCreateDto>> Create(CategoryCreateDto category);
-        Task<IResponse<CategoryQueryDto>> Update(CategoryQueryDto category);
+        Task<IResponse<CategoryUpdateDto>> Update(CategoryUpdateDto category);
         IResponse<CategoryQueryDto> Delete(int id);
         IResponse<IEnumerable<CategoryQueryDto>> GetByName(string name);
     }

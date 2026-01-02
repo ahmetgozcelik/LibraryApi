@@ -9,18 +9,30 @@ using LibraryCore.DTOs;
 
 namespace LibraryService.MapProfile
 {
-    public class MapProfile: Profile
+    public class MapProfile : Profile
     {
         public MapProfile()
         {
+            #region Author Mappings
             CreateMap<Author, AuthorCreateDto>().ReverseMap();
             CreateMap<Author, AuthorQueryDto>().ReverseMap();
+            CreateMap<AuthorUpdateDto, Author>()
+                .IgnoreNullAndEmpty();
+            #endregion
 
+            #region Book Mappings
             CreateMap<Book, BookCreateDto>().ReverseMap();
             CreateMap<Book, BookQueryDto>().ReverseMap();
+            CreateMap<BookUpdateDto, Book>()
+                .IgnoreNullAndEmpty();
+            #endregion
 
+            #region Category Mappings
             CreateMap<Category, CategoryCreateDto>().ReverseMap();
             CreateMap<Category, CategoryQueryDto>().ReverseMap();
+            CreateMap<CategoryUpdateDto, Category>()
+                .IgnoreNullAndEmpty();
+            #endregion
         }
     }
 }
