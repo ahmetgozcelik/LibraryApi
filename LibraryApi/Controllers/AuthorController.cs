@@ -1,10 +1,12 @@
 ﻿using LibraryCore.DTOs;
 using LibraryCore.Entities;
 using LibraryService.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthorController : Controller
@@ -16,6 +18,7 @@ namespace LibraryApi.Controllers
             _authorService = authorService;
         }
 
+        [AllowAnonymous]
         [HttpGet("ListAll")]
         public IActionResult GetAll()
         {

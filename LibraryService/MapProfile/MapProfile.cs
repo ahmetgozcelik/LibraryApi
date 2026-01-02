@@ -33,6 +33,11 @@ namespace LibraryService.MapProfile
             CreateMap<CategoryUpdateDto, Category>()
                 .IgnoreNullAndEmpty();
             #endregion
+
+            //#region User Mappings
+            //CreateMap<User, UserCreateDto>().ReverseMap();
+            //CreateMap<User, UserLoginDto>().ReverseMap();
+            //#endregion
         }
     }
 }
