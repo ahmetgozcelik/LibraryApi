@@ -7,6 +7,8 @@ using LibraryService.Interfaces;
 using LibraryService.MapProfile;
 using LibraryService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 // Log yapýlandýrmasý
@@ -17,6 +19,19 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
+
+// RateLimiting Yapýlandýrmasý
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("RateLimiter", options =>
+    {
+        options.PermitLimit = 5;
+        options.Window = TimeSpan.FromSeconds(10);
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst; // en eski isteði önce iþleme al
+        options.QueueLimit = 2;
+    });
+
+});
 
 // Jwt yapýlandýrmasý
 builder.Services.AddAuthentication(options =>
@@ -77,6 +92,11 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<DatabaseConnection>();
 
+builder.Services.AddDbContext<DatabaseConnection>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 // Service Implamantations
@@ -104,6 +124,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 

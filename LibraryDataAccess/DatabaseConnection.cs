@@ -6,22 +6,28 @@ using System.Threading.Tasks;
 using LibraryCore.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryDataAccess
 {
-    public class DatabaseConnection: DbContext
+    public class DatabaseConnection : DbContext
     {
-        #region
+        #region Tables
         public DbSet<User> Users { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
-        #endregion
+        #endregion 
+
+        public DatabaseConnection(DbContextOptions<DatabaseConnection> options) : base(options)
+        {
+            // Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source = DESKTOP-U3TENCR\\SQLEXPRESS; Initial Catalog = LibraryDB; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = True; ApplicationIntent = ReadWrite; MultiSubnetFailover = False; MultipleActiveResultSets = True;");
+            //optionsBuilder.UseSqlServer();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

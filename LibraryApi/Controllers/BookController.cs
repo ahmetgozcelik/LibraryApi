@@ -3,6 +3,7 @@ using LibraryCore.Entities;
 using LibraryService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace LibraryApi.Controllers
 {
@@ -18,6 +19,7 @@ namespace LibraryApi.Controllers
             _bookService = bookService;
         }
 
+        [EnableRateLimiting("RateLimiter")]
         [HttpGet("ListAll")]
         public IActionResult ListAll()
         {

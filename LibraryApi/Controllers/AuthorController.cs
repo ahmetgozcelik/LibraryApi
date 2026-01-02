@@ -22,14 +22,14 @@ namespace LibraryApi.Controllers
         [HttpGet("ListAll")]
         public IActionResult GetAll()
         {
-            var authors = _authorService.ListAll();
+            var result = _authorService.ListAll();
 
-            if(!authors.IsSuccess)
+            if(!result.IsSuccess)
             {
-                return NotFound("Yazar bulunamadı.");
+                return NotFound(result.Message);
             }
             
-            return Ok(authors);
+            return Ok(result);
         }
 
         [HttpDelete("Delete")]
@@ -39,7 +39,7 @@ namespace LibraryApi.Controllers
 
             if(!result.IsSuccess)
             {
-                return BadRequest("Silme işlemi başarısız.");
+                return BadRequest(result.Message);
             }
 
             return Ok(result);
@@ -57,7 +57,7 @@ namespace LibraryApi.Controllers
 
             if(!result.Result.IsSuccess)
             {
-                return BadRequest("Yazar oluşturulamadı.");
+                return BadRequest(result.Result.Message));
             }
 
             return Ok(result);
@@ -70,7 +70,7 @@ namespace LibraryApi.Controllers
 
             if(!result.IsSuccess)
             {
-                return BadRequest("Yazar bulunamadı.");
+                return BadRequest(result.Message);
             }
 
             return Ok(result);
@@ -88,7 +88,7 @@ namespace LibraryApi.Controllers
 
             if (!result.Result.IsSuccess)
             {
-                return BadRequest("Yazar oluşturulamadı.");
+                return BadRequest(result.Result.Message));
             }
 
             return Ok(result);
