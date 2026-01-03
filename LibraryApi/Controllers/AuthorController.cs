@@ -20,9 +20,9 @@ namespace LibraryApi.Controllers
 
         [AllowAnonymous]
         [HttpGet("ListAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _authorService.ListAll();
+            var result = await _authorService.ListAll();
 
             if(!result.IsSuccess)
             {
@@ -33,9 +33,9 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete("Delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _authorService.Delete(id);
+            var result = await _authorService.Delete(id);
 
             if(!result.IsSuccess)
             {
@@ -46,27 +46,27 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] AuthorCreateDto author)
+        public async Task<IActionResult> Create([FromBody] AuthorCreateDto author)
         {
             if(author == null)
             {
                 return BadRequest("Yazar bilgileri boş olamaz.");
             }
 
-            var result = _authorService.Create(author);
+            var result = await _authorService.Create(author);
 
-            if(!result.Result.IsSuccess)
+            if(!result.IsSuccess)
             {
-                return BadRequest(result.Result.Message));
+                return BadRequest(result.Message);
             }
 
             return Ok(result);
         }
 
         [HttpGet("GetByName")]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name)
         {
-            var result = _authorService.GetByName(name);
+            var result = await _authorService.GetByName(name);
 
             if(!result.IsSuccess)
             {
@@ -77,18 +77,18 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut("Update")]
-        public IActionResult Update([FromBody] AuthorUpdateDto author)
+        public async Task<IActionResult> Update([FromBody] AuthorUpdateDto author)
         {
             if(author == null)
             {
                 return BadRequest("Yazar bilgileri boş olamaz.");
             }
 
-            var result = _authorService.Update(author);
+            var result = await _authorService.Update(author);
 
-            if (!result.Result.IsSuccess)
+            if (!result.IsSuccess)
             {
-                return BadRequest(result.Result.Message));
+                return BadRequest(result.Message);
             }
 
             return Ok(result);

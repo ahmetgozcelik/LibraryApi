@@ -9,6 +9,7 @@ using LibraryCore.Entities;
 using LibraryDataAccess.Repositories;
 using LibraryService.Interfaces;
 using LibraryService.Response;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryService.Services
 {
@@ -24,41 +25,41 @@ namespace LibraryService.Services
             _mapper = mapper;
         }
 
-        public Task<IResponse<Author>> Create(AuthorCreateDto author)
+        public async Task<IResponse<Author>> Create(AuthorCreateDto authorCreateDto)
         {
             try
             {
-                if (author == null)
+                if (authorCreateDto == null)
                 {
-                    return Task.FromResult<IResponse<Author>>(ResponseGeneric<Author>.Error("Author bilgileri boş olamaz."));
+                    return ResponseGeneric<Author>.Error("Author bilgileri boş olamaz.");
                 }
 
-                var newAuthor = _mapper.Map<Author>(author);
-                newAuthor.RecordDate = DateTime.Now;
+                var authorEntity = _mapper.Map<Author>(authorCreateDto);
+                authorEntity.RecordDate = DateTime.Now;
 
-                _authorRepository.Create(newAuthor);
+                await _authorRepository.CreateAsync(authorEntity);
 
-                return Task.FromResult<IResponse<Author>>(ResponseGeneric<Author>.Success(newAuthor, "Yazar başarıyla oluşturuldu."));
+                return ResponseGeneric<Author>.Success(authorEntity, "Yazar başarıyla oluşturuldu.");
             }
             catch
             {
-                return Task.FromResult<IResponse<Author>>(ResponseGeneric<Author>.Error("Bir hata oluştu."));
+                return ResponseGeneric<Author>.Error("Bir hata oluştu.");
             }
         }
 
-        public IResponse<Author> Delete(int id)
+        public async Task<IResponse<Author>> Delete(int id)
         {
             try
             {
                 //önce entity var mı ona bak
-                var author = _authorRepository.GetByIdAsync(id).Result;
+                var author =await _authorRepository.GetByIdAsync(id);
                 if (author == null)
                 {
                     return ResponseGeneric<Author>.Error("Yazar bulunamadı.");
                 }
 
                 //entity varsa sil
-                _authorRepository.Delete(author);
+                await _authorRepository.DeleteAsync(author);
                 return ResponseGeneric<Author>.Success(null, "Yazar başarıyla silindi.");
             }
             catch
@@ -68,18 +69,19 @@ namespace LibraryService.Services
 
         }
 
-        public IResponse<AuthorQueryDto> GetById(int id)
+        public async Task<IResponse<AuthorQueryDto>> GetById(int id)
         {
             try
             {
-                var author = _authorRepository.GetByIdAsync(id).Result;
-
-                var authorQueryDto = _mapper.Map<AuthorQueryDto>(author); // mapper ile entity'i query'e dönüştürme
+                var author = await _authorRepository.GetByIdAsync(id);
 
                 if (author == null)
                 {
                     return ResponseGeneric<AuthorQueryDto>.Success(null, "Yazar bulunamadı.");
                 }
+
+                var authorQueryDto = _mapper.Map<AuthorQueryDto>(author); // mapper ile entity'i query'e dönüştürme
+
 
                 return ResponseGeneric<AuthorQueryDto>.Success(authorQueryDto, "Yazar başarıyla bulundu.");
             }
@@ -90,16 +92,17 @@ namespace LibraryService.Services
 
         }
 
-        public IResponse<IEnumerable<AuthorQueryDto>> GetByName(string name)
+        public async Task<IResponse<IEnumerable<AuthorQueryDto>>> GetByName(string name)
         {
             try
             {
-                var authors = _authorRepository.GetAll().Where(x => x.Name == name).ToList();
+                var authors = await _authorRepository.GetAll().Where(x => x.Name == name).ToListAsync();
 
-                var authorQueryDtos = _mapper.Map < IEnumerable<AuthorQueryDto>>(authors);
+                var authorQueryDtos = _mapper.Map <IEnumerable<AuthorQueryDto>>(authors);
 
                 if (authorQueryDtos == null || authorQueryDtos.Count() == 0)
                     return ResponseGeneric<IEnumerable<AuthorQueryDto>>.Success(null, "Yazar bulunamadı.");
+
                 return ResponseGeneric<IEnumerable<AuthorQueryDto>>.Success(authorQueryDtos, "Yazar başarıyla bulundu.");
             }
             catch
@@ -108,11 +111,11 @@ namespace LibraryService.Services
             }
         }
 
-        public IResponse<IEnumerable<AuthorQueryDto>> ListAll()
+        public async Task<IResponse<IEnumerable<AuthorQueryDto>>> ListAll()
         {
             try
             {
-                var allAuthors = _authorRepository.GetAll().ToList();
+                var allAuthors = await _authorRepository.GetAll().ToListAsync();
 
                 var authorQueryDtos = _mapper.Map<IEnumerable<AuthorQueryDto>>(allAuthors);
 
@@ -129,25 +132,25 @@ namespace LibraryService.Services
             
         }
 
-        public Task<IResponse<AuthorUpdateDto>> Update(AuthorUpdateDto authorDto)
+        public async Task<IResponse<AuthorUpdateDto>> Update(AuthorUpdateDto authorDto)
         {
             try
             {
-                var authorEntity = _authorRepository.GetByIdAsync(authorDto.Id).Result;
+                var authorEntity = await _authorRepository.GetByIdAsync(authorDto.Id);
 
                 if(authorEntity == null)
                 {
-                    return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Error("Yazar bulunamadı."));
+                    return ResponseGeneric<AuthorUpdateDto>.Error("Yazar bulunamadı.");
                 }
 
                 _mapper.Map(authorDto, authorEntity);
-                _authorRepository.Update(authorEntity);
+                await _authorRepository.UpdateAsync(authorEntity);
 
-                return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Success(null, "Yazar başarıyla güncellendi."));
+                return ResponseGeneric<AuthorUpdateDto>.Success(null, "Yazar başarıyla güncellendi.");
             }
             catch
             {
-                return Task.FromResult<IResponse<AuthorUpdateDto>>(ResponseGeneric<AuthorUpdateDto>.Error("Bir hata oluştu."));
+                return ResponseGeneric<AuthorUpdateDto>.Error("Bir hata oluştu.");
             }
         }
     }

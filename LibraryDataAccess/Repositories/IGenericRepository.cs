@@ -10,13 +10,22 @@ namespace LibraryDataAccess.Repositories
     {
         #region
         void Create(TEntity entity);
-        Task AddAsync(TEntity entity);
+        Task CreateAsync(TEntity entity);
+
         IQueryable<TEntity> GetAll();
+
         void Update(TEntity entity);
+        Task UpdateAsync(TEntity entity);
+
         void Delete(TEntity entity);
-        Task<TEntity> GetByIdAsync(int id);
-        TEntity GetById(int id);
+        Task DeleteAsync(TEntity entity);
+
         void DeleteRange(List<TEntity> entities);
+        Task DeleteRangeAsync(List<TEntity> entities);
+
+        TEntity GetById(int id);
+        Task<TEntity> GetByIdAsync(int id);
+
         IQueryable<TEntity> Queryable();
         #endregion
     }

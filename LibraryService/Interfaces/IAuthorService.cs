@@ -12,11 +12,11 @@ namespace LibraryService.Interfaces
 {
     public interface IAuthorService
     {
-        IResponse<IEnumerable<AuthorQueryDto>> ListAll();
-        IResponse<AuthorQueryDto> GetById(int id);
+        Task<IResponse<IEnumerable<AuthorQueryDto>>> ListAll();
+        Task<IResponse<AuthorQueryDto>> GetById(int id);
         Task<IResponse<Author>> Create(AuthorCreateDto author);
         Task<IResponse<AuthorUpdateDto>> Update(AuthorUpdateDto author);
-        IResponse<Author> Delete(int id);
-        IResponse<IEnumerable<AuthorQueryDto>> GetByName(string name);
+        Task<IResponse<Author>> Delete(int id);
+        Task<IResponse<IEnumerable<AuthorQueryDto>>> GetByName(string name);
     }
 }

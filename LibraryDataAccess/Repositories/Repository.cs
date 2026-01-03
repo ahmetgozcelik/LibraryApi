@@ -25,9 +25,10 @@ namespace LibraryDataAccess.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task CreateAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
         public void Delete(TEntity entity)
@@ -36,10 +37,22 @@ namespace LibraryDataAccess.Repositories
             _dbContext.SaveChanges();
         }
 
+        public async Task DeleteAsync(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public void DeleteRange(List<TEntity> entities)
         {
-            _dbSet.RemoveRange(entities);
+            _dbSet.RemoveRange(entities); 
             _dbContext.SaveChanges();
+        }
+
+        public async Task DeleteRangeAsync(List<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities); // RemoveRange hafızada yapıldığı için asenkron methodu yok
+            await _dbContext.SaveChangesAsync();
         }
 
         public IQueryable<TEntity> GetAll()
@@ -64,9 +77,18 @@ namespace LibraryDataAccess.Repositories
             _dbSet.Update(entity);
             _dbContext.SaveChanges();
         }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _dbSet.Update(entity); // Update metodu hafızada bir işaretleme(değiştirme) yaptığı için senkron çalışıyormuş
+            await _dbContext.SaveChangesAsync();
+        }
+
         public IQueryable<TEntity> Queryable()
         {
             return _dbSet.AsQueryable();
         }
+
+        
     }
 }
